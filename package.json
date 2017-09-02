@@ -13,7 +13,7 @@
   "dependencies": {
     "express": "^4.15.4",
     "request": "^2.81.0",
-    "leanengine": "1.2.2",
+    "leanengine": "1.2.2"
   },
   "devDependencies": {
     "connect": "^3.6.3",
