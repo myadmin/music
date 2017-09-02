@@ -27,8 +27,6 @@
                     _this.palyMusic(_this.songData);
                 }
 
-                console.log();
-
                 if (_this.lyric != null) {
                     for (let i = 0; i < _this.lyric.length; i++) {
                         if (!isNaN(_this.lyric[i][0])) {
