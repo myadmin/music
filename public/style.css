@@ -1,0 +1,85 @@
+*{margin: 0; padding: 0;}
+html{
+    background: #999;
+}
+.search{
+    width: 400px;
+    margin: 30px auto 0;
+    position: relative;
+}
+.search input {
+    display: block;
+    width: 92%;
+    height: 30px;
+    border: none;
+    padding: 0 4%;
+}
+.list{
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    background: #ccc;
+    border: 1px solid #000;
+    z-index: 2;
+    list-style-type: none;
+}
+.list li{
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #000;
+    padding: 0 16px;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.list li:hover{
+    background-color: #efefef;
+}
+.music{
+    width: 400px;
+    height: 400px;
+    background: #000;
+    position: relative;
+    margin: 0 auto;
+}
+.music-lyric{
+    position: absolute;
+    top: 32px;
+    bottom: 32px;
+    left: 0;
+    right: 0;
+    height: 300px;
+    overflow: hidden;
+}
+.lyric-content{
+    /*top: 210px;*/
+    position: relative;
+    text-align: center;
+    color: #fff;
+    max-width: 100%;
+    max-height: 100%;
+    transform: translateY(210px);
+    transition: all .2s;
+}
+.lyric-content p{
+    font-size: 14px;
+    margin-bottom: 11px;
+}
+#audio{
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    bottom: 0;
+    overflow: hidden;
+    zoom: 1;
+    width: 400px;
+    background-color: rgba(0,0,0,.8);
+}
+.current{
+    color: #a6e22d;
+    font-weight: bold;
+}
