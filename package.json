@@ -15,6 +15,7 @@
   "devDependencies": {
     "connect": "^3.6.3",
     "connect-timeout": "^1.9.0",
-    "superagent": "^3.6.0"
+    "superagent": "^3.6.0",
+    "leanengine": "1.2.2"
   }
 }
