@@ -4,6 +4,9 @@ var app = express();
 var path = require('path');
 var request = require('request');
 
+//设置端口
+app.set('port', process.env.PORT || 3000);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function (req, res) {
@@ -67,11 +70,25 @@ app.get('/api/search', function (req, res, next) {
 	console.log('Example app listening at http://%s:%s', host, port);
 });*/
 
+//404
+app.use(function (req, res) {
+    res.type('text/plan');
+    res.status(404);
+    res.send('404 - Not Found');
+});
+//500
+app.use(function (err, req, res, next) {
+    res.type('text/plan');
+    res.status(500);
+    res.send('500 - Server Error');
+});
+
 app.use(AV.express());
 app.listen(process.env.LEANCLOUD_APP_PORT);
+
 AV.init({
-  appId: process.env.LEANCLOUD_APP_ID || 'bWb7H4Q4xeoNwocMVtKCksLc-gzGzoHsz',
-  appKey: process.env.LEANCLOUD_APP_KEY || 'tuMAhLq1kkWQM5E6TKXShrcR',
-  masterKey: process.env.LEANCLOUD_APP_MASTER_KEY || '6AUdDIa3Xye1Qq3QNGdqw9C8'
+	appId: process.env.LEANCLOUD_APP_ID || 'bWb7H4Q4xeoNwocMVtKCksLc-gzGzoHsz',
+	appKey: process.env.LEANCLOUD_APP_KEY || 'tuMAhLq1kkWQM5E6TKXShrcR',
+	masterKey: process.env.LEANCLOUD_APP_MASTER_KEY || '6AUdDIa3Xye1Qq3QNGdqw9C8'
 });
 
