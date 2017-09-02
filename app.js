@@ -70,7 +70,8 @@ app.get('/api/search', function (req, res, next) {
 app.use(AV.express());
 app.listen(process.env.LEANCLOUD_APP_PORT);
 AV.init({
-	appId: process.env.LEANCLOUD_APP_ID || 'e4HoNsATtcbIfMsJUIvifq47-gzGzoHsz',
-	appKey: process.env.LEANCLOUD_APP_KEY || 's3UmER9fcFLf2w4xLMRb4FTn',
-	masterKey: process.env.LEANCLOUD_APP_MASTER_KEY || 'sfajMfKsprsDHRpQrS82XOmL'
+  appId: process.env.LEANCLOUD_APP_ID || 'bWb7H4Q4xeoNwocMVtKCksLc-gzGzoHsz',
+  appKey: process.env.LEANCLOUD_APP_KEY || 'tuMAhLq1kkWQM5E6TKXShrcR',
+  masterKey: process.env.LEANCLOUD_APP_MASTER_KEY || '6AUdDIa3Xye1Qq3QNGdqw9C8'
 });
+
