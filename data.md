@@ -1,3 +1,5 @@
+#### 百度音乐api
+
 ## 1. 搜索建议
 #### http://tingapi.ting.baidu.com/v1/restserver/ting?from=qianqian&version=2.1.0&method=baidu.ting.search.catalogSug&format=json&query=%E5%B0%8F%E8%8B%B9%E6%9E%9C
 #### 搜索建议：只有歌名
