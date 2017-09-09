@@ -63,13 +63,6 @@ app.get('/api/search', function (req, res, next) {
 	});
 });
 
-/*var server = app.listen(3000, function () {
-	var host = server.address().address;
-	var port = server.address().port;
-
-	console.log('Example app listening at http://%s:%s', host, port);
-});*/
-
 //404
 app.use(function (req, res) {
     res.type('text/plan');
@@ -83,12 +76,9 @@ app.use(function (err, req, res, next) {
     res.send('500 - Server Error');
 });
 
-app.use(AV.express());
-app.listen(process.env.LEANCLOUD_APP_PORT);
+var server = app.listen(3000, function () {
+	var host = server.address().address;
+	var port = server.address().port;
 
-AV.init({
-	appId: process.env.LEANCLOUD_APP_ID || 'bWb7H4Q4xeoNwocMVtKCksLc-gzGzoHsz',
-	appKey: process.env.LEANCLOUD_APP_KEY || 'tuMAhLq1kkWQM5E6TKXShrcR',
-	masterKey: process.env.LEANCLOUD_APP_MASTER_KEY || '6AUdDIa3Xye1Qq3QNGdqw9C8'
+	console.log('Example app listening at http://%s:%s', host, port);
 });
-
