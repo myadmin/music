@@ -1,6 +1,6 @@
 ### 使用 git clone https://github.com/myadmin/music.git 将项目克隆到本地
 ### 执行 node server
-### 浏览器众打开localhost:3000 即可正常访问
+### 浏览器中打开localhost:3000 即可正常访问
 
 #### 百度音乐api
 
