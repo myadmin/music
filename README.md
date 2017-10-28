@@ -1,8 +1,8 @@
+### react、redux、虾米音乐接口完成的另外一个音乐播发器：[react和redux配合完成的音乐播放器demo](https://github.com/myadmin/react-redux-music) 在线访问地址：www.zhouwei.pw/build/
+
 ### 使用 git clone https://github.com/myadmin/music.git 将项目克隆到本地
 ### 执行 node server
 ### 浏览器中打开localhost:3000 即可正常访问
-
-### react、redux、虾米音乐接口完成的另外一个音乐播发器：[react和redux配合完成的音乐播放器demo](https://github.com/myadmin/react-redux-music) 访问地址：www.zhouwei.pw/build/
 
 #### 百度音乐api
 
