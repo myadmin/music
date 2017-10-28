@@ -2,7 +2,7 @@
 ### 执行 node server
 ### 浏览器中打开localhost:3000 即可正常访问
 
-### 使用原生js完成
+### react、redux、虾米音乐接口完成的另外一个音乐播发器：[https://github.com/myadmin/react-redux-music] 访问地址：www.zhouwei.pw/build/
 
 #### 百度音乐api
 
