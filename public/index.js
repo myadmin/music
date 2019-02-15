@@ -81,6 +81,7 @@
         },
         palyMusic: function (songData) {
             var audio = document.querySelector('#audio');
+            songData.replace('http', 'https');
             audio.setAttribute('src', songData);
         },
         parseLyric: function (lrc) {
