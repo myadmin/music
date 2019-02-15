@@ -23,6 +23,7 @@ html{
     border: 1px solid #000;
     z-index: 2;
     list-style-type: none;
+    overflow-y: auto;
 }
 .list li{
     height: 24px;

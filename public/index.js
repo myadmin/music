@@ -2,8 +2,8 @@
 
     var PlayMusic = function () {
         this.lyric = [];
-        this.musicSrcs = ['/api/getSong?song=74175933'];
-        this.lyricSrcs = ['/api/getData?song=74175933'];
+        this.musicSrcs = ['https://api.pushemail.xyz/song/url?id=415792881'];
+        this.lyricSrcs = ['https://api.pushemail.xyz/lyric?id=415792881'];
         this.lyricContent = document.querySelector('.lyric-content')
 
         this.init(0);
@@ -12,8 +12,6 @@
     PlayMusic.prototype = {
         constructor: PlayMusic,
         init: function (index) {
-            var _this = this;
-            
             this.syncLyric();
 
             this.getLyric(index);
@@ -45,14 +43,23 @@
         getLyric: function (index) {
             var _this = this;
             this.getData(_this.lyricSrcs[index], function (lrc) {
-                var lrcData = JSON.parse(JSON.parse(lrc).body).lrcContent;
-                _this.lyric = _this.parseLyric(lrcData);
-                _this.loadLyric(_this.lyric);
+                var lrcData = JSON.parse(lrc);
+                if (lrcData.code === 200) {
+                    var lrc = lrcData.lrc.lyric;
+                    _this.lyric = _this.parseLyric(lrc);
+                    _this.loadLyric(_this.lyric);
 
-                _this.getData(_this.musicSrcs[index], function (data) {
-                    _this.songData = JSON.parse(JSON.parse(data).body).bitrate.file_link;
-                    _this.palyMusic(_this.songData);
-                });
+                    _this.getData(_this.musicSrcs[index], function (data) {
+                        _this.songData = JSON.parse(data);
+                        if (_this.songData.code === 200) {
+                            _this.palyMusic(_this.songData.data[0].url);
+                        } else {
+                            alert('不存在该歌曲');
+                        }
+                    });
+                } else {
+                    alert('没有歌词');
+                }
             });
         },
         getData: function (url, callback) {
@@ -137,20 +144,24 @@
             document.querySelector('#search').onkeypress = function (e) {
                 if (e.charCode === 13) {
                     list.innerHTML = '';
-                    _this.getData('/api/search?val=' + this.value, function (data) {
-                        var songList = JSON.parse(data).body.song;
-                        songList.forEach(function (ele, index) {
-                            var line = document.createElement('li');
-                            line.className = 'list-li';
-                            line.title = ele.songname;
-                            line.setAttribute('data-Id', ele.songid);
-                            line.textContent = ele.songname;
-                            fragment.appendChild(line);
-                        });
-
-                        list.appendChild(fragment);
-
-                        _this.clickFn();
+                    _this.getData('https://api.pushemail.xyz/search?keywords=' + this.value, function (data) {
+                        var songData = JSON.parse(data);
+                        if (songData.code === 200) {
+                            var songList = songData.result.songs;
+                            songList.forEach(function (ele, index) {
+                                var line = document.createElement('li');
+                                line.className = 'list-li';
+                                line.title = ele.name;
+                                line.setAttribute('data-Id', ele.id);
+                                line.textContent = ele.name;
+                                fragment.appendChild(line);
+                            });
+    
+                            list.appendChild(fragment);
+                            list.style.height = '400px';
+    
+                            _this.clickFn();
+                        }
                     });
                 }
             };
@@ -168,8 +179,8 @@
                     var songId = this.getAttribute('data-id');
                     _this.musicSrcs.length = 0;
                     _this.lyricSrcs.length = 0;
-                    _this.musicSrcs.push('/api/getSong?song=' + songId);
-                    _this.lyricSrcs.push('/api/getData?song=' + songId);
+                    _this.musicSrcs.push('https://api.pushemail.xyz/song/url?id=' + songId);
+                    _this.lyricSrcs.push('https://api.pushemail.xyz/lyric?id=' + songId);
                     _this.init(0);
 
                     ul.style.display = 'none';
