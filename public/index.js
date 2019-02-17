@@ -22,13 +22,12 @@
             var _this = this;
             document.querySelector('audio').ontimeupdate = function () {
                 if (this.ended) {
-                    _this.palyMusic(_this.songData);
+                    _this.palyMusic(_this.songData.data[0].url);
                 }
-
                 if (_this.lyric != null) {
                     for (let i = 0; i < _this.lyric.length; i++) {
                         if (!isNaN(_this.lyric[i][0])) {
-                            if (this.currentTime > _this.lyric[i][0] - 1) {
+                            if (this.currentTime > _this.lyric[i][0] - 0.30) {
                                 var line = document.getElementById('line-' + i),
                                     prevLine = document.getElementById('line-' + (i > 0 ? i - 1 : i));
                                 prevLine.className = '';
