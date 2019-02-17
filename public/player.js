@@ -84,7 +84,7 @@
                     name: detail.name,
                     artist: detail.al.name,
                     url: songData.replace('http', 'https'),
-                    cover: detail.al.picUrl,
+                    cover: detail.al.picUrl.replace('http', 'https'),
                     lrc:  lrc,
                     theme: '#ebd0c2'
                 }
