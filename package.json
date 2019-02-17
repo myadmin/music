@@ -8,17 +8,18 @@
     "dev": "nodemon server.js"
   },
   "engines": {
-    "node": "6.x"
+    "node": "8.x"
   },
   "dependencies": {
+    "aplayer": "^1.10.1",
     "express": "^4.15.4",
-    "request": "^2.81.0",
-    "leanengine": "1.2.2"
+    "leanengine": "1.2.2",
+    "request": "^2.81.0"
   },
   "devDependencies": {
     "connect": "^3.6.3",
     "connect-timeout": "^1.9.0",
-    "superagent": "^3.6.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "superagent": "^3.6.0"
   }
 }

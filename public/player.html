@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="referrer" content="never">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>index</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.0/dist/APlayer.min.css">
+        <link rel="stylesheet" href="style.css">
+        <script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.0/dist/APlayer.min.js"></script>
+    </head>
+    <body>
+        <div class="search">
+            <input placeholder="搜索歌曲" type="text" id="search" />
+            <ul class="list"></ul>
+        </div>
+        <div class="music-box">
+            <div id="player"></div>
+        </div>
+        <script type="text/javascript">
+            document.write('<script type="text/javascript" src="player.js?timer='+new Date().getTime()+'"><\/script>');
+        </script>
+    </body>
+</html>

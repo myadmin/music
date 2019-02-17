@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .cur{color: red;}
+        #lrcArea{width: 300px; height: 300px; overflow: hidden; padding: 20px 0;}
+        ul{list-style: none;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <audio id="player" src="https://m10.music.126.net/20190217203837/9b82927cf9ad3f52a892ddc2f638cb06/ymusic/ffb9/a7e1/383b/b1a4c190345688313650bfae7ffb54c4.mp3" loop controls preload></audio>
+    <div id="lrcArea"></div>
+</div>
+ 
+<script id="lrc" type="text">
+ [00:00.00] 作曲 : 薛之谦
+ [00:01.00] 作词 : 薛之谦
+ [00:30.580]编曲 : 郑伟
+ [00:36.580]如果有人在灯塔
+ [00:39.870]拨弄她的头发
+ [00:41.980]思念刻在墙和瓦
+ [00:45.160]
+ [00:45.900]如果感情会挣扎
+ [00:48.520]没有说的儒雅
+ [00:50.960]把挽回的手放下
+ [00:53.910]
+ [00:54.560]镜子里的人说假话
+ [00:58.530]违心的样子你决定了吗
+ [01:02.440]
+ [01:03.650]装聋或者作哑 要不我先说话
+ [01:11.340]
+ [01:15.340]我们的爱情 到这刚刚好
+ [01:19.810]剩不多也不少 还能忘掉
+ [01:24.960]我应该可以 把自己照顾好
+ [01:30.510]
+ [01:32.840]我们的距离 到这刚刚好
+ [01:37.140]不够我们拥抱 就挽回不了
+ [01:41.640]
+ [01:42.230]用力爱过的人 不该计较
+ [01:48.230]
+ [01:58.290]是否要逼人弃了甲
+ [02:01.610]亮出一条伤疤
+ [02:03.770]不堪的根源在哪
+ [02:06.610]
+ [02:07.520]可是感情会挣扎
+ [02:09.820]没有别的办法
+ [02:11.920]它劝你不如退下
+ [02:15.660]如果分手太复杂
+ [02:18.860]
+ [02:19.420]流浪的歌手会放下吉他
+ [02:24.450]故事要美必须藏着真话
+ [02:29.700]
+ [02:31.990]我们的爱情 到这刚刚好
+ [02:36.150]剩不多也不少 还能忘掉
+ [02:41.200]我应该可以 把自己照顾好
+ [02:46.740]
+ [02:48.750]我们的距离 到这刚刚好
+ [02:52.970]不够我们拥抱 就挽回不了
+ [02:57.600]
+ [02:58.300]用力爱过的人 不该计较
+ [03:03.590]
+ [03:05.740]我们的爱情到这刚刚好
+ [03:09.860]再不争也不吵 不必再煎熬
+ [03:14.530]
+ [03:15.100]你可以不用 记得我的好
+ [03:20.510]
+ [03:22.500]我们的流浪到这刚刚好
+ [03:26.640]趁我们还没到 天涯海角
+ [03:31.720]我也不是非要去那座城堡
+ [03:37.810]
+ [03:39.370]天空有些暗了暗的刚刚好
+ [03:43.610]我难过的样子就没人看到
+ [03:48.850]你别太在意我身上的记号
+ [03:58.850]
+ [04:07.580]制作 : 薛之谦
+ [04:08.580]录音 : 郝宇
+ [04:09.580]混音 : 郑伟
+ [04:10.00]母带处理 : Ted Jensen
+</script>
+<script>
+var musicPlayer = function() {
+    return this.init.apply(this, arguments);
+};
+
+musicPlayer.prototype = {
+    constructor: musicPlayer,
+    init: function(options) {
+        if (isEmptyObj(options) || typeof options !== 'object') return;
+        this.player = options.player;
+        this.lrc = options.lrc;
+        this.lrcArea = options.lrcArea;
+        //用于保存歌词
+        this.lrcArr = [];
+        //用于保存时间戳
+        this.timestamp = [];
+        //处理歌词
+        this.handleLrc(this.lrc);
+        var that = this;
+
+        this.player.addEventListener('play',
+        function() {
+            that.play();
+        },
+        false);
+
+        this.player.addEventListener('pause',
+        function() {
+            that.pause();
+        },
+        false);
+
+        //歌词索引
+        this.idx = 0;
+    },
+    //格式化歌词
+    handleLrc: function(lrc) {
+        var re = /(\[.+\])(.+)?/gm,
+        ul = cEl('ul'),
+        frag = document.createDocumentFragment(),
+        tmpArr,
+        i,
+        len;
+        this.lrcArea.innerHTML = '';
+        frag.appendChild(ul);
+        ul.id = 'c';
+        this.lrcArea.appendChild(frag);
+
+        var txt = lrc.replace(re,
+        function(a, b, c) {
+            return b + (c === undefined ? '&nbsp;': c) + '\n';
+        });
+
+        tmpArr = txt.split('\n');
+
+        //处理歌词
+        for (i = 0, len = tmpArr.length; i < len; i++) {
+            var item = trim(tmpArr[i]);
+            if (item.length > 0) {
+                this.lrcArr.push(item);
+            }
+        }
+
+        frag = document.createDocumentFragment();
+
+        for (i = 0, len = this.lrcArr.length; i < len; i++) {
+            var li = cEl('li');
+            if (i === 0) {
+                li.className = 'cur';
+            }
+            li.innerHTML = this.lrcArr[i].replace(/\[.+\]/i, '');
+            //处理时间
+            this.timestamp.push(this.lrcArr[i].replace(re,
+            function(a, b, c) {
+                return b;
+            }).replace('[', '').replace(']', ''));
+            frag.appendChild(li);
+        }
+
+        ul.appendChild(frag);
+        this.li = $('lrcArea').getElementsByTagName('li');
+    },
+    //播放
+    play: function() {
+        this.stop = false;
+        var that = this,
+        player = this.player,
+        i, len;
+
+        this.t = setInterval(function() {
+            if (that.stop) return;
+            that.curTime = player.currentTime;
+
+            for (i = 0, len = that.timestamp.length - 1; i < len; i++) {
+                var prevTime = that.formatTimeStamp(that.timestamp[i]),
+                nextTime = that.formatTimeStamp(that.timestamp[i + 1]);
+                //当前播放时间与前后歌词时间比较，如果位于这两者之间则转到该歌词
+                if (parseFloat(that.curTime) > prevTime && parseFloat(that.curTime) < nextTime) {
+                    that.scrollToLrc(i);
+                    return;
+                }
+            }
+        },
+        300);
+    },
+    //暂停
+    pause: function() {
+        this.stop = true;
+        clearInterval(this.t);
+    },
+    //格式化时间
+    formatTimeStamp: function(timestamp) {
+        var re = /([0-9]+):([0-9]+)\.([0-9]+)/i,
+        seconds = timestamp.replace(re,
+        function(a, b, c, d) {
+            return Number(b * 60) + Number(c) + parseFloat('0.' + d);
+        });
+        return seconds;
+    },
+    //歌词滚动
+    scrollToLrc: function(idx) {
+        var ds = getOffset(this.li[idx]).top,
+        i,
+        len;
+        //如果歌词索引没有变动，则认为这句没有唱完，不处理
+        if (this.idx === idx) return;
+        //否则更新索引值并更新样式和位置
+        this.idx = idx;
+        for (i = 0, len = this.li.length; i < len; i++) {
+            this.li[i].className = '';
+        }
+        this.li[idx].className = 'cur';
+        this.lrcArea.scrollTop = ds - this.lrcArea.offsetHeight / 2;
+    }
+};
+
+function $(id) {
+    return typeof id === 'string' ? document.getElementById(id) : id;
+}
+function cEl(el) {
+    return document.createElement(el);
+}
+function trim(str) {
+    return str.replace(/(^\s*)|(\s*$)/g, "");
+}
+function isEmptyObj(o) {
+    for (var p in o) return false;
+    return true;
+}
+function getOffset(el) {
+    var parent = el.offsetParent,
+    left = el.offsetLeft,
+    top = el.offsetTop;
+
+    while (parent !== null) {
+        left += parent.offsetLeft;
+        top += parent.offsetTop;
+        parent = parent.offsetParent;
+    }
+
+    return {
+        left: left,
+        top: top
+    };
+}
+
+var p = new musicPlayer({
+    player: $('player'),
+    lrc: $('lrc').innerHTML,
+    lrcArea: $('lrcArea')
+});
+</script>
+</body>
+</html>
