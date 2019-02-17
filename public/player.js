@@ -83,7 +83,7 @@
                 audio: {
                     name: detail.name,
                     artist: detail.al.name,
-                    url: songData,
+                    url: songData.replace(/^http/, 'https'),
                     cover: detail.al.picUrl,
                     lrc:  lrc,
                     theme: '#ebd0c2'
