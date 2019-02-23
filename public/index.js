@@ -85,10 +85,11 @@
         parseLyric: function (lrc) {
             try {
                 var lines = lrc.split('\n'),
-                    pattern = /\[\d{2}:\d{2}.\d{2}\]/g,
+                    // pattern = /\[\d{2}:\d{2}.\d{2}\]/g,
+                    timeExp = /\[(\d{2,}):(\d{2})(?:\.(\d{2,3}))?]/g,
                     result = [];
 
-                while(!pattern.test(lines[0])) {
+                while(!timeExp.test(lines[0])) {
                     lines = lines.slice(1);
                 }
 
