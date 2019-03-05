@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <script type="text/javascript" src="txt-reader.min.js"></script>
+    <style>
+        html,body{width: 100%; height: 100%; font-family: "Segoe UI,Segoe WP,Arial",Sans-Serif;}
+        *{margin: 0; padding: 0;}
+        #render{
+            position: absolute; top: 70px; right: 10px; bottom: 10px; left: 10px; overflow-y: auto;
+            border: 1px solid #efefef; background-color: #fff7b2; box-sizing: border-box; padding: 20px;}
+        #render .item{line-height: 40px; font-size: 18px; overflow: hidden;}
+        #render .item:hover{background-color: #fefefe;}
+        #render .item i{float: left; width: 30px; height: 40px; color: #000; font-style: normal;}
+        #render .item span{line-height: 40px; margin-left: 30px; text-indent: 2em;}
+        #shadow{position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 10; display: none; background-color: rgba(0, 0, 0, .2)}
+        #shadow:before{
+            content: '加载中';
+            font-size: 30px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            color: #fff;
+            transform: translate3d(-50%, -50%, 0);
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <input type="file" id="change-file" accept=".txt" />
+    <span class="totalPage" id="currentTotal">原有总共 <i>0</i> 行</span>&nbsp;&nbsp;
+    <span class="totalPage" id="pageNum">现划分为每 <i>0</i> 行/页</span>&nbsp;&nbsp;
+    <span class="totalPage" id="totalPage">总共 <i>0</i> 页</span>&nbsp;&nbsp;
+    <span class="current">当前第 <i class="current-page" id="current-page">0</i> 页</span>&nbsp;&nbsp;
+    <button id="prev">上一页</button>&nbsp;&nbsp;
+    <button id="next">下一页</button>&nbsp;&nbsp;
+    <button id="cloud">读取云端图书</button>
+</div>
+<div id="render"></div>
+<div id="shadow"></div>
+<script>
+window.onload = function () {
+    let fileBtn = document.querySelector('#change-file'),
+        renderRender = document.querySelector('#render'),
+        currentTotalRender = document.querySelector('#currentTotal i'),
+        pageNumRender = document.querySelector('#pageNum i')
+        totalPageRender = document.querySelector('#totalPage i'),
+        prevBtn = document.querySelector('#prev'),
+        nextBtn = document.querySelector('#next'),
+        currentPage = document.querySelector('#current-page'),
+        cloudBtn = document.querySelector('#cloud'),
+        shadowRender = document.querySelector('#shadow');
+
+    let reader = new TxtReader(),
+        lineCount = 0,
+        totalPage = 0,
+        iNowPage = 1,
+        pageNum = 50;
+
+    //打开本地文件
+    fileBtn.addEventListener('change', function (event) {
+        let file = event.target.files[0];
+        readFile(file);
+        iNowPage = 1;
+    }, false);
+
+    //打开云端文件，从云端下载到本地，然后打开
+    cloudBtn.addEventListener('click', function () {
+        shadowRender.style.display = 'block';
+        //let url = 'https://kindle-assist-cn.oss-cn-shanghai.aliyuncs.com/%E4%B8%89%E5%AF%B8%E4%BA%BA%E9%97%B4.txt';
+        let url = 'https://kindle-assist-cn.oss-cn-shanghai.aliyuncs.com/%E9%95%87%E9%AD%82.txt';
+        downloadBook(url, '镇魂.txt', function (file) {
+            shadowRender.style.display = 'none';
+            iNowPage = 1;
+            readFile(file, iNowPage);
+        });
+    }, false);
+
+    function downloadBook(url, fileName, successCallback, progressCallback) {
+        // Create XHR
+        let xhr = new XMLHttpRequest(),
+            blob,
+            currentTime = new Date().getTime();
+
+        //url后面加时间戳是为了避免缓存
+        xhr.open("GET", url + '?' + currentTime, true);
+        // Set the responseType to blob
+        xhr.responseType = "blob";
+
+        xhr.addEventListener("load", function () {
+            if (xhr.status === 200) {
+                console.log("===文件下载成功===");
+
+                //$('.book-list-item').eq(index).find('.item-book-progress').hide();
+                // Blob as response
+                blob = xhr.response;
+                //console.log("Blob:", blob);
+
+                //将blob转为file，然后返回出去
+                let file = new File([blob], fileName);
+                //console.log("File:", file);
+                successCallback(file);
+            }
+        }, false);
+
+        // Send XHR
+        xhr.send();
+    }
+
+    //上一页
+    prevBtn.addEventListener('click', prev_page, false);
+
+    //下一页
+    nextBtn.addEventListener('click', next_page, false);
+
+    //键盘操作
+    document.addEventListener('keyup', function (event) {
+        if (event.keyCode === 39) {
+            //→
+            next_page();
+        } else if (event.keyCode === 37) {
+            //←
+            prev_page();
+        }
+    }, false);
+
+    function prev_page() {
+        iNowPage--;
+        //当前页面到第一页时，不能再后退了
+        if (iNowPage < 1) {
+            alert('已经是第一页了')
+            iNowPage = 1;
+            return false;
+        }
+        currentPage.innerHTML = iNowPage;
+        renderBook(iNowPage);
+    }
+
+    function next_page() {
+        iNowPage++;
+        //当前页面已经到最后一页后，不能继续翻页
+        if (iNowPage > totalPage) {
+            alert('已经是最后一页了')
+            iNowPage = totalPage;
+            return false;
+        }
+        currentPage.innerHTML = iNowPage;
+        renderBook(iNowPage);
+    }
+
+    function readFile(file) {
+        //读取文件
+        reader.loadFile(file)
+            .progress(function (progress) {
+                //读取的进度
+                console.log('loadFile', progress);
+            })
+            .then(function (response) {
+                //读取完成后，返回的数据中包含解析整个文本的时间、解析的信息、返回当前文本的总行数
+                //console.log(response);
+                //拿到当前文件的总行数
+                lineCount = response.result.lineCount;
+                //计算总页数，当前我划分的是每页100行
+                totalPage = Math.ceil(lineCount / pageNum);
+                currentTotalRender.innerHTML = lineCount;
+                pageNumRender.innerHTML = pageNum;
+                totalPageRender.innerHTML = totalPage;
+                currentPage.innerHTML = iNowPage;
+                //执行后续渲染阅读区域操作
+                renderBook(iNowPage);
+            })
+            .catch(function (reason) {
+                console.log(reason);
+            });
+    }
+
+    //渲染文本
+    function renderBook(iNowPage) {
+        //读取文件中的从某行开始的内容，有两个参数
+        //第一个参数是从第几行开始，第二个参数是要获取多少行
+        //1, 50
+        //50, 50
+        //100, 50
+        //1 + 50 * (1 - 1) = 1
+        //1 + 50 * (2 - 1) = 51
+        //1 + 50 * (3 - 1) = 101
+        //let currentNum = iNowPage + pageNum * (iNowPage - 1);
+        if(iNowPage === 1) {
+            currentNum = 1;
+        } else {
+            currentNum = (iNowPage - 1) * pageNum;
+        }
+        console.log('iNowPage', iNowPage);
+        console.log('currentNum', currentNum);
+        console.log('pageNum', pageNum);
+        reader.getLines(currentNum, pageNum)
+            .progress(function (progress) {
+                //获取文件内容的进度
+                //console.log(progress);
+            })
+            .then(function (response) {
+                //读取成功后，返回三个参数
+                //第一个参数的解析这100行花的时间
+                //第二个参数是解析文本的内容
+                //第三个参数是文本解析成功的消息，一般为空
+                console.log('getLines response:', response);
+
+                renderRender.innerHTML = '';
+                renderRender.scrollTop = 0;
+                //将文本内容渲染到页面上
+                let fragment = document.createDocumentFragment();
+                for (let i = 0; i < response.result.length; i++) {
+                    let p = document.createElement('p');
+                    p.className = 'item';
+                    if (currentNum === 1) {
+                        p.innerHTML = `<i>${i + 1}</i><span>${response.result[i]}</span>`;
+                    } else {
+                        p.innerHTML = `<i>${i + currentNum + 1}</i><span>${response.result[i]}</span>`;
+                    }
+                    fragment.appendChild(p);
+                }
+                renderRender.appendChild(fragment);
+            })
+            .catch(function (reason) {
+                console.log(reason);
+            });
+
+        //检索文件
+        reader.iterateLines({
+            eachLine: function (raw, progress, lineNumber) {
+                if (this.decode(raw).indexOf('第35章') > -1) {
+                    console.log(`当前第${lineNumber + 1}行`);
+                    this.count++;
+                }
+            },
+            scope: {
+                count: 0
+            }
+        })
+            .progress(function (progress) {
+                //console.log('Iterating lines progress: ' + progress + '%');
+            })
+            .then(function (response) {
+                //console.log(response.result)
+                //console.log(response.result.count + ' lines contain "章"');
+            })
+            .catch(function (reason) {
+                //console.log(reason)
+            });
+    }
+};
+</script>
+</body>
+</html>
