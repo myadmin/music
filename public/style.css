@@ -95,3 +95,11 @@ html{
     color: #a6e22d;
     font-weight: bold;
 }
+.copyright{
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    transform: translate3d(-50%, 0, 0);
+    color: #d0cbcb;
+    font-size: 12px;
+}
